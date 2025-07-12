@@ -1,74 +1,85 @@
 import React, { useEffect, useState, useRef } from "react";
 
-// ===== helpers =====
+// ===== BIOS text генерация =====
+function generateBIOSLines() {
+  if (typeof window === "undefined") return ["> BATYA-404 BIOS v1.08 (c)", "> USER SCAN ................. INCOMPLETE"];
 
-const now = new Date();
-const getScreenResolution = () =>
-  `${window.screen.width}x${window.screen.height}`;
-const getDeviceType = () =>
-  /Mobile|Android|iP(ad|hone)/i.test(navigator.userAgent)
-    ? "MOBILE"
-    : "DESKTOP";
-const pad = (n) => String(n).padStart(2, "0");
-const timeString = `${pad(now.getDate())}/${pad(
-  now.getMonth() + 1
-)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(
-  now.getSeconds()
-)}`;
+  const now = new Date();
+  const getScreenResolution = () =>
+    `${window.screen.width}x${window.screen.height}`;
+  const getDeviceType = () =>
+    /Mobile|Android|iP(ad|hone)/i.test(navigator.userAgent)
+      ? "MOBILE"
+      : "DESKTOP";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const timeString = `${pad(now.getDate())}/${pad(
+    now.getMonth() + 1
+  )}/${now.getFullYear()} ${pad(now.getHours())}:${pad(
+    now.getMinutes()
+  )}:${pad(now.getSeconds())}`;
 
-function getOSType() {
-  if (navigator.userAgent.indexOf("Win") !== -1) return "WINDOWS";
-  if (navigator.userAgent.indexOf("Mac") !== -1) return "MAC";
-  if (navigator.userAgent.indexOf("Linux") !== -1) return "LINUX";
-  if (navigator.userAgent.indexOf("Android") !== -1) return "ANDROID";
-  if (navigator.userAgent.indexOf("like Mac") !== -1) return "iOS";
-  return "UNKNOWN";
+  function getOSType() {
+    if (navigator.userAgent.indexOf("Win") !== -1) return "WINDOWS";
+    if (navigator.userAgent.indexOf("Mac") !== -1) return "MAC";
+    if (navigator.userAgent.indexOf("Linux") !== -1) return "LINUX";
+    if (navigator.userAgent.indexOf("Android") !== -1) return "ANDROID";
+    if (navigator.userAgent.indexOf("like Mac") !== -1) return "iOS";
+    return "UNKNOWN";
+  }
+
+  function getBrowser() {
+    const ua = navigator.userAgent;
+    if (ua.indexOf("Chrome") !== -1 && ua.indexOf("Edg") === -1) return "CHROME";
+    if (ua.indexOf("Firefox") !== -1) return "FIREFOX";
+    if (ua.indexOf("Safari") !== -1 && ua.indexOf("Chrome") === -1)
+      return "SAFARI";
+    if (ua.indexOf("Edg") !== -1) return "EDGE";
+    return "BROWSER";
+  }
+
+  return [
+    "> BATYA-404 BIOS v1.08 (c)",
+    "> USER SCAN ................. COMPLETED",
+    `> SYS: ${timeString} | ${getDeviceType()} | ${getOSType()} | ${getBrowser()} | ${getScreenResolution()} |`,
+    "",
+    "> MEMORY CHECK .............. OK",
+    "> SYNTHWAVE MODE ............ ENABLED",
+    "> PETS ...................... FEEDED",
+    "> RETRO-LOVE ................ 100%",
+    "> TEA CUP LEVEL ............. 79%",
+    "> KARMA POINTS .............. 404 FOUND",
+    "",
+    "> UNAUTHORIZED SHENKI WILL BE BANNED",
+    "> CRITICAL:PETS NOT PETTED .. 0 DAYS 8 HOURS",
+    "PRESS ANY KEY TO CONTINUE_",
+  ];
 }
-function getBrowser() {
-  const ua = navigator.userAgent;
-  if (ua.indexOf("Chrome") !== -1 && ua.indexOf("Edg") === -1) return "CHROME";
-  if (ua.indexOf("Firefox") !== -1) return "FIREFOX";
-  if (ua.indexOf("Safari") !== -1 && ua.indexOf("Chrome") === -1)
-    return "SAFARI";
-  if (ua.indexOf("Edg") !== -1) return "EDGE";
-  return "BROWSER";
-}
-const lang = navigator.language ? navigator.language.toUpperCase() : "EN";
 
-// ====== BIOS text ======
-const biosLines = [
-  "> BATYA-404 BIOS v1.08 (c)",
-  "> USER SCAN ................. COMPLETED",
-  `> SYS: ${timeString} | ${getDeviceType()} | ${getOSType()} | ${getBrowser()} | ${getScreenResolution()} |  `,
-  "",
-  "> MEMORY CHECK .............. OK",
-  "> SYNTHWAVE MODE ............ ENABLED",
-  "> PETS ...................... FEEDED",
-  "> RETRO-LOVE ................ 100%",
-  "> TEA CUP LEVEL ............. 79%",
-  "> KARMA POINTS .............. 404 FOUND",
-  "",
-  "> UNAUTHORIZED SHENKI WILL BE BANNED",
-  "> CRITICAL:PETS NOT PETTED .. 0 DAYS 8 HOURS",
-  "PRESS ANY KEY TO CONTINUE_",
-];
-
-export default function BIOS({ onComplete }) {
+export default function BIOS({ onComplete }: { onComplete: () => void }) {
+  const [biosLines, setBiosLines] = useState<string[]>([]);
   const [displayedLines, setDisplayedLines] = useState<string[]>([]);
   const [currentLine, setCurrentLine] = useState("");
   const [lineIndex, setLineIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
   const [done, setDone] = useState(false);
   const [blink, setBlink] = useState(true);
-  const FIRST_EGG_DELAY = 45000; // 1 минута (первая пасхалка)
-  const SECOND_EGG_DELAY = 60000; // 1 минута (вторая пасхалка)
+  const FIRST_EGG_DELAY = 45000;
+  const SECOND_EGG_DELAY = 60000;
 
-  // === Пасхалки
   const easterEggAudio1 = useRef<HTMLAudioElement | null>(null);
   const easterEggAudio2 = useRef<HTMLAudioElement | null>(null);
+  const typeSound = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Инициализируем оба трека
+    setBiosLines(generateBIOSLines());
+  }, []);
+
+  useEffect(() => {
+    typeSound.current = new Audio("/type.mp3");
+    typeSound.current.load();
+  }, []);
+
+  useEffect(() => {
     easterEggAudio1.current = new Audio(
       "https://store2.gofile.io/download/direct/52d4bbec-cfa3-4df9-984d-24eb62dfe339/egg_skaju.mp3"
     );
@@ -76,17 +87,15 @@ export default function BIOS({ onComplete }) {
 
     easterEggAudio2.current = new Audio(
       "https://store4.gofile.io/download/direct/d47ec367-96b0-4b5f-ab82-c88ce4d2af96/batya_strannik.mp3"
-    ); // поменяй на свой путь!
+    );
     easterEggAudio2.current.load();
   }, []);
 
-  // Пасхальные таймеры
   useEffect(() => {
     if (!done) return;
     let timeout1: ReturnType<typeof setTimeout> | null = null;
     let timeout2: ReturnType<typeof setTimeout> | null = null;
 
-    // --- Обработчик окончания —
     const finish = () => {
       if (timeout1) clearTimeout(timeout1);
       if (timeout2) clearTimeout(timeout2);
@@ -100,16 +109,14 @@ export default function BIOS({ onComplete }) {
     window.addEventListener("keydown", finish);
     window.addEventListener("mousedown", finish);
 
-    // --- Первая пасхалка
     timeout1 = setTimeout(() => {
       easterEggAudio1.current?.play().catch(() => {});
-
       easterEggAudio1.current?.addEventListener("ended", () => {
         timeout2 = setTimeout(() => {
           easterEggAudio2.current?.play().catch(() => {});
-        }, SECOND_EGG_DELAY); // ← используем переменную
+        }, SECOND_EGG_DELAY);
       });
-    }, FIRST_EGG_DELAY); // ← используем переменную
+    }, FIRST_EGG_DELAY);
 
     return () => {
       if (timeout1) clearTimeout(timeout1);
@@ -117,19 +124,9 @@ export default function BIOS({ onComplete }) {
       window.removeEventListener("keydown", finish);
       window.removeEventListener("mousedown", finish);
       easterEggAudio1.current?.pause();
-      easterEggAudio1.current && (easterEggAudio1.current.currentTime = 0);
       easterEggAudio2.current?.pause();
-      easterEggAudio2.current && (easterEggAudio2.current.currentTime = 0);
     };
   }, [done, onComplete]);
-
-  // Typewriter effect
-  const typeSound = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    typeSound.current = new Audio("/type.mp3");
-    typeSound.current.load();
-  }, []);
 
   useEffect(() => {
     if (lineIndex >= biosLines.length) {
@@ -147,18 +144,16 @@ export default function BIOS({ onComplete }) {
         }
       }, 30);
       return () => clearTimeout(timeout);
-    } else if (lineIndex < biosLines.length) {
+    } else {
       const timeout = setTimeout(() => {
-        if (lineIndex < biosLines.length - 1) {
-          setDisplayedLines((prev) => [...prev, fullLine]);
-        }
+        setDisplayedLines((prev) => [...prev, fullLine]);
         setCurrentLine("");
         setCharIndex(0);
         setLineIndex((prev) => prev + 1);
       }, 200);
       return () => clearTimeout(timeout);
     }
-  }, [charIndex, lineIndex]);
+  }, [charIndex, lineIndex, biosLines]);
 
   useEffect(() => {
     if (done) {
@@ -167,7 +162,6 @@ export default function BIOS({ onComplete }) {
     }
   }, [done]);
 
-  // ======= Цвета для особых строк =======
   function getLineStyle(line: string) {
     if (
       line.startsWith("> CRITICAL") ||
@@ -188,7 +182,6 @@ export default function BIOS({ onComplete }) {
     return undefined;
   }
 
-  // ======= Рендер =======
   return (
     <div className="bios-fullscreen">
       <div className="bios-text">
