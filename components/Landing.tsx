@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 type LandingProps = {
   onChatOpen: () => void;
@@ -204,68 +204,70 @@ export default function Landing({ onChatOpen }: LandingProps) {
   `}</style>
           </button>
 
-          {/* Кнопка перехода в генератор медиа */}
-          <Link
-            to="/media/gen"
-            style={{
-              display: "inline-block",
-              backgroundColor: "rgba(0, 0, 0, 0.4)",
-              border: "1px solid #00ffff",
-              color: "#00ffff",
-              fontFamily: "monospace",
-              fontSize: "16px",
-              padding: "10px 20px",
-              textShadow: "0 0 3px #00ffff",
-              boxShadow: "inset 0 0 5px #00ffff, 0 0 10px #00ffff",
-              cursor: "pointer",
-              backdropFilter: "blur(2px)",
-              letterSpacing: "1px",
-              textDecoration: "none",
-              transition: "0.3s",
-              width: "fit-content",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.boxShadow =
-                "inset 0 0 8px #00ffff, 0 0 20px #00ffff")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.boxShadow =
-                "inset 0 0 5px #00ffff, 0 0 10px #00ffff")
-            }
-          >
-            /media/gen/
-          </Link>
-          <Link
-            to="/vault"
-            style={{
-              display: "inline-block",
-              backgroundColor: "rgba(0, 0, 0, 0.4)",
-              border: "1px solid #00ffff",
-              color: "#00ffff",
-              fontFamily: "monospace",
-              fontSize: "16px",
-              padding: "10px 20px",
-              textShadow: "0 0 3px #00ffff",
-              boxShadow: "inset 0 0 5px #00ffff, 0 0 10px #00ffff",
-              cursor: "pointer",
-              backdropFilter: "blur(2px)",
-              letterSpacing: "1px",
-              textDecoration: "none",
-              width: "fit-content",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow =
-                "inset 0 0 8px #00ff00, 0 0 20px #00ff00";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow =
-                "inset 0 0 5px #00ff00, 0 0 10px #00ff00";
-            }}
-          >
-            /data/ai
-          </Link>
-        </div>
-      </div>
+       {/* Кнопка перехода в генератор медиа */}
+<Link href="/media/gen">
+  <a
+    style={{
+      display: "inline-block",
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
+      border: "1px solid #00ffff",
+      color: "#00ffff",
+      fontFamily: "monospace",
+      fontSize: "16px",
+      padding: "10px 20px",
+      textShadow: "0 0 3px #00ffff",
+      boxShadow: "inset 0 0 5px #00ffff, 0 0 10px #00ffff",
+      cursor: "pointer",
+      backdropFilter: "blur(2px)",
+      letterSpacing: "1px",
+      textDecoration: "none",
+      transition: "0.3s",
+      width: "fit-content",
+    }}
+    onMouseEnter={(e) =>
+      (e.currentTarget.style.boxShadow =
+        "inset 0 0 8px #00ffff, 0 0 20px #00ffff")
+    }
+    onMouseLeave={(e) =>
+      (e.currentTarget.style.boxShadow =
+        "inset 0 0 5px #00ffff, 0 0 10px #00ffff")
+    }
+  >
+    /media/gen/
+  </a>
+</Link>
+
+<Link href="/vault">
+  <a
+    style={{
+      display: "inline-block",
+      backgroundColor: "rgba(0, 0, 0, 0.4)",
+      border: "1px solid #00ffff",
+      color: "#00ffff",
+      fontFamily: "monospace",
+      fontSize: "16px",
+      padding: "10px 20px",
+      textShadow: "0 0 3px #00ffff",
+      boxShadow: "inset 0 0 5px #00ffff, 0 0 10px #00ffff",
+      cursor: "pointer",
+      backdropFilter: "blur(2px)",
+      letterSpacing: "1px",
+      textDecoration: "none",
+      width: "fit-content",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.boxShadow =
+        "inset 0 0 8px #00ff00, 0 0 20px #00ff00";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.boxShadow =
+        "inset 0 0 5px #00ff00, 0 0 10px #00ff00";
+    }}
+  >
+    /data/ai
+  </a>
+</Link>
+
 
       {/* 🔊 Волна звука */}
       {isPlaying && (
