@@ -1,0 +1,49 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+.neon-button {
+  display: inline-block;
+  padding: 12px 24px;
+  font-family: "Courier New", monospace;
+  color: #00ffcc;
+  background-color: transparent;
+  border: 2px solid #00ffcc;
+  text-decoration: none;
+  box-shadow: 0 0 8px #00ffcc;
+  transition: all 0.2s ease-in-out;
+}
+.neon-button:hover {
+  background-color: #00ffcc;
+  color: #000;
+  box-shadow: 0 0 16px #00ffcc;
+}
+
+.synthwave-btn {
+  color: #e6e6fa; /* нежно-фиолетовый, менее яркий чем #fff */
+  background: linear-gradient(90deg, #ff00cc, #3333ff 90%);
+  border: none;
+  border-radius: 12px;
+  padding: 0.75em 2em;
+  font-size: 1.2em;
+  box-shadow: 0 0 10px #ff00cc, 0 0 20px #3333ff, 0 0 40px #00fff7;
+  transition: box-shadow 0.2s, transform 0.2s;
+  text-shadow: 0 0 4px #fff, 0 0 8px #ff00cc;
+  margin-right: 8px;
+}
+.synthwave-btn:hover {
+  box-shadow: 0 0 20px #ff00cc, 0 0 40px #3333ff, 0 0 80px #00fff7;
+  transform: scale(1.07) rotate(-2deg);
+}
+<canvas
+  ref={canvasRef}
+  style={{
+    width: "210px",      // ширина на экране, например 260px
+    height: "100px",     // высота на экране, например 180px
+    maxWidth: "60%",
+    borderRadius: 8,
+    border: "1px solid #0ff",
+    minHeight: 120,
+    background: "#090e18",
+  }}
+/>
