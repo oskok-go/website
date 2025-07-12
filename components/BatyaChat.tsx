@@ -5,7 +5,6 @@ type ChatProps = {
   onClose: () => void;
 };
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY!;
 
 export default function BatyaChat({ onClose }: ChatProps) {
   const [messages, setMessages] = useState<string[]>([]);
@@ -20,7 +19,7 @@ export default function BatyaChat({ onClose }: ChatProps) {
     setInput("");
 
     try {
-      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+const res = await fetch("/api/batya", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
