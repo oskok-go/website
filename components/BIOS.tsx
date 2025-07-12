@@ -195,16 +195,16 @@ export default function BIOS({ onComplete }: { onComplete: () => void }) {
           )
         )}
         {lineIndex < biosLines.length ? (
-          <div style={getLineStyle(biosLines[lineIndex])}>
-            {currentLine}
-            <span className="bios-cursor">█</span>
-          </div>
-        ) : (
-          biosLines[biosLines.length - 1].endsWith("_") && (
-            <div style={{ marginTop: 22 }}>
-              {biosLines[biosLines.length - 1].replace("_", "")}
-              <span className="bios-cursor">{blink ? "█" : " "}</span>
-            </div>
+  <div style={getLineStyle(biosLines[lineIndex])}>
+    {currentLine}
+    <span className="bios-cursor">█</span>
+  </div>
+) : (
+  biosLines[biosLines.length - 1]?.endsWith("_") && (
+    <div style={{ marginTop: 22 }}>
+      {biosLines[biosLines.length - 1].replace("_", "")}
+      <span className="bios-cursor">{blink ? "█" : " "}</span>
+    </div>
           )
         )}
       </div>
