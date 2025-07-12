@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
-type LandingProps = {
-  onChatOpen: () => void;
-};
-
-export default function Landing({ onChatOpen }: LandingProps) {
+export default function Landing() {
   const [audio] = useState(new Audio());
   const [isPlaying, setIsPlaying] = useState(false);
   const [clickAudio] = useState(new Audio("/audio/click.wav"));
-  const [lampAudio] = useState(
-    new Audio(
-      "https://store-eu-par-1.gofile.io/download/direct/478ed201-0eae-42c6-a362-3c19f3967737/lamp.mp3"
-    )
-  );
+  const [lampAudio] = useState(new Audio("https://store-eu-par-1.gofile.io/download/direct/478ed201-0eae-42c6-a362-3c19f3967737/lamp.mp3"));
   const [cooldown, setCooldown] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     lampAudio.loop = true;
     lampAudio.volume = 0.2;
-    lampAudio.play().catch((e) => console.warn("Lamp ambient playback issue", e));
+    lampAudio.play().catch((e) => console.warn("Lamp ambient issue", e));
 
     return () => {
       lampAudio.pause();
@@ -28,62 +22,37 @@ export default function Landing({ onChatOpen }: LandingProps) {
   }, [lampAudio]);
 
   const [wisdomAudios, setWisdomAudios] = useState<string[]>([]);
-
   useEffect(() => {
-    const fetchWisdoms = async () => {
-      try {
-        const res = await fetch("https://batya-api.onrender.com/wisdoms?random=30");
-        const data = await res.json();
-        setWisdomAudios(data);
-      } catch (err) {
-        console.error("❌ Ошибка загрузки мудростей:", err);
-      }
-    };
-
-    fetchWisdoms();
+    fetch("https://batya-api.onrender.com/wisdoms?random=30")
+      .then((res) => res.json())
+      .then(setWisdomAudios)
+      .catch((err) => console.error("Wisdoms load error:", err));
   }, []);
 
   const handleChatClick = () => {
     clickAudio.currentTime = 0;
-    clickAudio.play().catch((e) => console.warn("Click sound failed", e));
-    onChatOpen();
+    clickAudio.play().catch(() => {});
+    router.push("/chat"); // Или вызывай onChatOpen(), если это логика modal
   };
 
   const playWisdom = () => {
     if (cooldown || isPlaying || !wisdomAudios.length) return;
 
     const random = wisdomAudios[Math.floor(Math.random() * wisdomAudios.length)];
-    console.log("🎧 Загружаем:", random);
-
     setCooldown(true);
     setTimeout(() => setCooldown(false), 30000);
 
     audio.pause();
-    audio.src = "";
+    audio.src = random;
     audio.load();
-
-    setTimeout(() => {
-      audio.src = random;
-      audio.load();
-
-      audio.oncanplaythrough = () => {
-        audio
-          .play()
-          .then(() => {
-            setIsPlaying(true);
-            console.log("✅ Успешно играет");
-          })
-          .catch((e) => console.warn("❌ Playback failed", e));
-      };
-
-      audio.onerror = () => {
-        console.warn("❌ Аудио не загрузилось", random);
-        setIsPlaying(false);
-      };
-
-      audio.onended = () => setIsPlaying(false);
-    }, 100);
+    audio.oncanplaythrough = () => {
+      audio.play().then(() => setIsPlaying(true));
+    };
+    audio.onerror = () => setIsPlaying(false);
+    audio.onended = () => setIsPlaying(false);
   };
+
+  return (
 
   return (
     <div style={{
