@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useRouter } from "next/router";
 
 const API_BASE = "https://batya-api.onrender.com/api";
 
@@ -9,6 +9,8 @@ export default function Vault() {
   const [current, setCurrent] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const router = useRouter();
 
   const getRandom = async () => {
     setLoading(true);
@@ -55,9 +57,8 @@ export default function Vault() {
         minHeight: "100vh",
       }}
     >
-      {/* Назад */}
-      <Link
-        to="/"
+      <button
+        onClick={() => router.push("/")}
         style={{
           display: "inline-block",
           backgroundColor: "rgba(0, 0, 0, 0.4)",
@@ -68,10 +69,11 @@ export default function Vault() {
           marginBottom: "20px",
           textDecoration: "none",
           boxShadow: "inset 0 0 4px #00ffff, 0 0 8px #00ffff",
+          cursor: "pointer",
         }}
       >
         ← Назад
-      </Link>
+      </button>
 
       <h1
         style={{
